@@ -12,8 +12,8 @@ services:
       - nginx
   php-fpm:
     image: exozet/php-fpm:7.1.2
-    volumes:
-      - ./:/usr/src/app
+    volumes_from:
+      - lsyncd
   nginx:
     image: nginx:1.11.10
     depends_on:
@@ -23,3 +23,13 @@ services:
     volumes:
       - ./:/usr/src/app
       - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
+  lsyncd:
+    image: dracoblue/lsyncd
+    environment:
+    - SOURCES=/mnt/vendor
+    - DESTINATIONS=/usr/src/app/vendor
+    - EXCLUDES=.svn:.git:.docker
+    volumes:
+      - ./:/usr/src/app
+      - ./vendor:/mnt/vendor
+      - /usr/src/app/vendor
